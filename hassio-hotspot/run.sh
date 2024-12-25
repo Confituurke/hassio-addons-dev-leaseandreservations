@@ -129,6 +129,10 @@ ifup ${INTERFACE}
 sleep 1
 
 if test ${DHCP_SERVER} = true; then
+    # Create leases directory and file
+    mkdir -p /var/lib/udhcpd
+    touch /var/lib/udhcpd/udhcpd.leases
+
     # Setup hdhcpd.conf
     UCONFIG="/etc/udhcpd.conf"
 
