@@ -133,6 +133,11 @@ if test ${DHCP_SERVER} = true; then
     mkdir -p /var/lib/udhcpd
     touch /var/lib/udhcpd/udhcpd.leases
 
+    # Calculate max leases from DHCP range
+    START_IP_LAST_OCTET=$(echo ${DHCP_START} | cut -d. -f4)
+    END_IP_LAST_OCTET=$(echo ${DHCP_END} | cut -d. -f4)
+    MAX_LEASES=$((END_IP_LAST_OCTET - START_IP_LAST_OCTET + 1))
+
     # Setup hdhcpd.conf
     UCONFIG="/etc/udhcpd.conf"
 
@@ -140,6 +145,7 @@ if test ${DHCP_SERVER} = true; then
     echo "interface    ${INTERFACE}"     >> ${UCONFIG}
     echo "start        ${DHCP_START}"    >> ${UCONFIG}
     echo "end          ${DHCP_END}"      >> ${UCONFIG}
+    echo "max_leases   ${MAX_LEASES}"    >> ${UCONFIG}
     echo "opt dns      ${DHCP_DNS}"      >> ${UCONFIG}
     echo "opt subnet   ${DHCP_SUBNET}"   >> ${UCONFIG}
     echo "opt router   ${DHCP_ROUTER}"   >> ${UCONFIG}
